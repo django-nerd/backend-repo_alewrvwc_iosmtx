@@ -38,11 +38,17 @@ class Product(BaseModel):
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
 
-# Add your own schemas here:
-# --------------------------------------------------
-
-# Note: The Flames database viewer will automatically:
-# 1. Read these schemas from GET /schema endpoint
-# 2. Use them for document validation when creating/editing
-# 3. Handle all database operations (CRUD) directly
-# 4. You don't need to create any database endpoints!
+# Lead schema for Partner with NCUK enquiries
+class Lead(BaseModel):
+    """
+    Leads collection schema for Partnership enquiries
+    Collection name: "lead"
+    """
+    institution_name: str = Field(..., description="Institution name")
+    role: str = Field(..., description="Role/Job title of the enquirer")
+    current_student_volume: str = Field(..., description="Approximate current student volume (numeric or band)")
+    region: str = Field(..., description="Region of operation")
+    utm_source: Optional[str] = Field(None, description="UTM source (optional)")
+    utm_medium: Optional[str] = Field(None, description="UTM medium (optional)")
+    utm_campaign: Optional[str] = Field(None, description="UTM campaign (optional)")
+    referral_url: Optional[str] = Field(None, description="Referrer URL (optional)")

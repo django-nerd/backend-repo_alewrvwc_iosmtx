@@ -1,8 +1,13 @@
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import Any, Dict
 
-app = FastAPI()
+from schemas import Lead
+from database import create_document
+
+app = FastAPI(title="NCUK Partner API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,11 +19,20 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"message": "Hello from FastAPI Backend!"}
+    return {"message": "NCUK Partner API running"}
 
 @app.get("/api/hello")
 def hello():
     return {"message": "Hello from the backend API!"}
+
+@app.post("/api/leads")
+def create_lead(lead: Lead) -> Dict[str, Any]:
+    """Create a new partner enquiry lead and store it in MongoDB."""
+    try:
+        inserted_id = create_document("lead", lead)
+        return {"status": "ok", "id": inserted_id}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/test")
 def test_database():
